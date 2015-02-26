@@ -11,10 +11,11 @@ import players.Felyne;
 import players.Koneko;
 import players.Melynx;
 import players.Palico;
+import players.RoranStronghammer;
 
 public class Game {
 	private static Player[] players = {
-			new Helper(),
+			new RoranStronghammer(),
 			new Helper(),
 			new Helper(),
 			new Helper()
@@ -209,6 +210,8 @@ public class Game {
 		
 		if (gameOver(hunters))
 			return false;
+		
+		acquireTarget(hunters);
 
 		return true;	
 	}
@@ -246,14 +249,13 @@ public class Game {
 		return monster.isDead();
 	}
 	
-	private int acquireTarget(List<Hunter> hunters) {
-		return hunters.stream().filter(x -> !x.isDead()).max((x, y) -> x.getAggro() - y.getAggro()).get().getId(); 
+	private void acquireTarget(List<Hunter> hunters) {
+		int playerId = hunters.stream().filter(x -> !x.isDead()).max((x, y) -> x.getAggro() - y.getAggro()).get().getId();
+		monster.setTarget(playerId);
 	}
 	
 	private void decideMonster(List<Hunter> hunters) {
-		int playerId = acquireTarget(hunters);
-		monster.setTarget(playerId);
-		
+				
 		if (monster.isFlying()) {
 			monster.setFlying(false);
 			if (GAME_MESSAGES) { System.out.println("The " + monster.getSpecies().getName() + " landed."); }
@@ -487,7 +489,7 @@ public class Game {
 		hunter.setAggro(hunter.getAggro() + AGGRO_PER_TAUNT);
 		hunter.setEnergy(Math.max(0, Math.min(HUNTER_BASE_ENERGY, hunter.getEnergy() + ENERGY_PER_TAUNT)));
 		
-		if (GAME_MESSAGES) { System.out.println(hunter.getOwner().getDisplayName() + " started dancing and throwing a rock at the " + monster.getSpecies().getName() + " to get its attention."); } 
+		if (GAME_MESSAGES) { System.out.println(hunter.getOwner().getDisplayName() + " started dancing and throwing rocks at the " + monster.getSpecies().getName() + " to get its attention."); } 
 	}
 	
 	private void executeWait(Command support) {
