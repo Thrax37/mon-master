@@ -11,11 +11,18 @@ import players.Felyne;
 import players.Koneko;
 import players.Melynx;
 import players.Palico;
+import players.RedViper;
 import players.RoranStronghammer;
+import players.TheKingsJester;
+import players.WeaselWill;
 
 public class Game {
 	private static Player[] players = {
 			new RoranStronghammer(),
+			new RedViper(),
+			new WeaselWill(),
+			new TheKingsJester(),
+			new Helper(),
 			new Helper(),
 			new Helper(),
 			new Helper()
@@ -175,7 +182,7 @@ public class Game {
 				
 				Player owner = hunter.getOwner();
 				try {
-					String request = round + ";" + owner.getId() + generateMonsterArgs() + generateHuntersArgs();
+					String request = round + ";" + owner.getId() + generateMonsterArgs() + generateHuntersArgs(hunters);
 					String response = hunter.getCommand(request);
 					if (DEBUG) {
 						System.out.println("Request : " + request);
@@ -588,7 +595,7 @@ public class Game {
 		return builder.toString();
 	}
 
-	private String generateHuntersArgs() {
+	private String generateHuntersArgs(List<Hunter> hunters) {
 		
 		StringBuilder builder = new StringBuilder();
 		//PlayerId WeaponId Atk Def HP Energy Guard Speed Sharpness Aggro Potions Rations Whetstones
