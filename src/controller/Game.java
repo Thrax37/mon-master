@@ -2,46 +2,21 @@ package controller;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import players.Felyne;
-import players.Koneko;
-import players.Melynx;
-import players.Palico;
-import players.RedViper;
-import players.RoranStronghammer;
-import players.TheKingsJester;
-import players.WeaselWill;
-
 public class Game {
-	private static Player[] players = {
-			new RoranStronghammer(),
-			new RedViper(),
-			new WeaselWill(),
-			new TheKingsJester(),
-			new Helper(),
-			new Helper(),
-			new Helper(),
-			new Helper()
-	};
 	
-	private static List<Player> helpers = new ArrayList<>(Arrays.asList(
-			new Felyne(),
-			new Melynx(),
-			new Palico(),
-			new Koneko()
-	));
-	
+	private Player[] players;
+		
 	// Game Parameters
 	private static final int ROUNDS = 50;
 	private static final int HUNTERS_PER_HUNT = 4;
 	
 	// Console
 	private static final boolean DEBUG = false;
-	private static final boolean GAME_MESSAGES = true;
+	private static final boolean GAME_MESSAGES = false;
 	
 	// Hunter
 	private static final int HUNTER_BASE_DEF = 5;
@@ -72,7 +47,7 @@ public class Game {
 	private static final int MONSTER_MOVE_ROAR = 10;
 	private static final int MONSTER_MOVE_FLY = 10;
 	private static final int MONSTER_MOVE_CHARGE = 15;
-	private static final int MONSTER_MOVE_SPIN = 15;
+	private static final int MONSTER_MOVE_SPIN = 20;
 	
 	// Scores
 	private static final int SCORE_HUNT = 1000;
@@ -83,9 +58,12 @@ public class Game {
 	private Monster monster = new Monster();
 	private List<String> monsterMoves = new ArrayList<String>();
 	
-	public Game() {
-		for (int i = 0; i < players.length; i++) {
-			players[i].setId(i);
+	public Game(Player[] players) {
+		this.players = players;
+		
+		for (int i = 0; i < this.players.length; i++) {
+			this.players[i].setId(i);
+			this.players[i].setScore(0);
 		}
 		for (int i = 0; i < MONSTER_MOVE_OBSERVE; i++) 	{ monsterMoves.add("O"); }
 		for (int i = 0; i < MONSTER_MOVE_ATTACK; i++) 	{ monsterMoves.add("A"); }
@@ -95,23 +73,8 @@ public class Game {
 		for (int i = 0; i < MONSTER_MOVE_SPIN; i++) 	{ monsterMoves.add("S"); }
 	}
 	
-	public static void main(String... args) {
+	public List<Score> run() {
 		
-		// Adding random helpers to make teams
-		Random r = new Random();
-		for (int i = 0; i < players.length; i++) { 
-			if (players[i].getClass().equals(Helper.class)) {
-				int p = r.nextInt(helpers.size());
-				players[i] = helpers.get(p);
-				helpers.remove(p);
-			}
-		}
-		
-		// Starting
-		new Game().run();
-	}	
-	public void run() {
-			
 		if (GAME_MESSAGES) 
 			System.out.println("Starting a new game...");
 		
@@ -142,7 +105,7 @@ public class Game {
 				}
 			}
 		}
-		printResults();
+		return generateResults();
 	}
 	
 	private void initialize() {		
@@ -561,11 +524,11 @@ public class Game {
 		}
 	}
 	
-	private void printResults() {
+	private List<Score> generateResults() {
 		
 		List<Score> scores = new ArrayList<Score>();
 		
-		System.out.println("********** FINISH **********");
+		System.out.println("******  GAME RESULTS  ******");
 		
 		
 		for (Player player : players) {
@@ -579,6 +542,8 @@ public class Game {
 			Score score = scores.get(i);
 			System.out.println(i+1 + ". " + score.print());
 		}
+		
+		return scores;
 		
 	}
 	
